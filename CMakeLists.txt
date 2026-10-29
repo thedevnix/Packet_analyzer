@@ -1,24 +1,17 @@
 cmake_minimum_required(VERSION 3.16)
-project(PacketAnalyzer VERSION 1.0)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+project(PacketAnalyzer VERSION 1.0 LANGUAGES CXX)
 
-# Source files
-set(SOURCES
-    src/main.cpp
+find_package(Threads REQUIRED)
+
+add_executable(dpi_engine
+    src/dpi_mt.cpp
     src/pcap_reader.cpp
     src/packet_parser.cpp
+    src/sni_extractor.cpp
+    src/types.cpp
 )
 
-# Header files location
-include_directories(${CMAKE_SOURCE_DIR}/include)
-
-# Create the executable
-add_executable(packet_analyzer ${SOURCES})
-
-# For macOS, we might need to link against system libraries later
-if(APPLE)
-    # Add any macOS-specific settings here
-endif()
+target_include_directories(dpi_engine PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_compile_features(dpi_engine PRIVATE cxx_std_17)
+target_link_libraries(dpi_engine PRIVATE Threads::Threads)
